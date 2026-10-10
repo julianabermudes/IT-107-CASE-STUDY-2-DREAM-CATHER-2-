@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PCC Clinic - Patient Management System</title>
+  <link rel="stylesheet" href="PART 2 CSS.css">
+  <script src="PART 3 JAVA.js" defer></script>
+</head>
+<body>
+
+  <!-- LOGIN PAGE -->
+  <section id="loginPage" class="login-page">
+    <div class="login-brand">
+      <div class="logo">✚</div>
+      <p>PASIG CATHOLIC COLLEGE</p>
+      <h1>PCC Clinic</h1>
+      <p>Clinic Patient Management System</p>
+      <small>Health Today, Brighter Tomorrow</small>
+    </div>
+
+    <div class="login-card">
+      <h2>Welcome Back!</h2>
+      <p class="muted">Log in to access the system.</p>
+
+      <form id="loginForm">
+        <label for="username">Username</label>
+        <input id="username" type="text"
+               placeholder="Enter username" required>
+
+        <label for="password">Password</label>
+        <input id="password" type="password"
+               placeholder="Enter password" required>
+
+        <p class="demo">Demo: admin / clinic123</p>
+        <button type="submit" class="primary full">Log In</button>
+        <p id="loginError" class="error"></p>
+      </form>
+
+      <small class="muted">Student project prototype.</small>
+    </div>
+  </section>
+
+  <!-- MAIN SYSTEM -->
+  <div id="appShell" class="app-shell hidden">
+
+    <aside class="sidebar">
+      <div class="brand">
+        <span class="logo small-logo">✚</span>
+        <div>
+          <strong>PCC CLINIC</strong>
+          <small>Patient Management</small>
+        </div>
+      </div>
+
+      <nav>
+        <button class="nav-item active" data-page="dashboard">
+          ▦ Dashboard
+        </button>
+        <button class="nav-item" data-page="patients">
+          ♙ Patient Information
+        </button>
+        <button class="nav-item" data-page="consultations">
+          ▤ Consultations
+        </button>
+        <button class="nav-item" data-page="services">
+          ✚ Medical Services
+        </button>
+        <button class="nav-item" data-page="appointments">
+          ◷ Appointments
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">● Prototype Mode</div>
+    </aside>
+
+    <main class="main-content">
+
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">PASIG CATHOLIC COLLEGE</p>
+          <h2 id="pageTitle">Dashboard</h2>
+        </div>
+
+        <div class="user-area">
+          <div class="avatar">A</div>
+          <div>
+            <strong>Admin Staff</strong>
+            <small>Demo Account</small>
+          </div>
+          <button id="logoutBtn" class="outline">Log Out</button>
+        </div>
+      </header>
+
+      <!-- DASHBOARD -->
+      <section id="dashboardPage" class="page">
+        <h1>Welcome to PCC Clinic!</h1>
+        <p class="muted">
+          Manage basic patient information, consultations,
+          medical services, and appointments.
+        </p>
+
+        <div class="stats">
+          <article class="stat-card">
+            <span class="stat-icon green">♙</span>
+            <p>Sample Patients</p>
+            <h2 id="statPatients">0</h2>
+          </article>
+
+          <article class="stat-card">
+            <span class="stat-icon blue">▤</span>
+            <p>Consultations</p>
+            <h2 id="statConsultations">0</h2>
+          </article>
+
+          <article class="stat-card">
+            <span class="stat-icon purple">✚</span>
+            <p>Medical Services</p>
+            <h2 id="statServices">4</h2>
+          </article>
+
+          <article class="stat-card">
+            <span class="stat-icon orange">◷</span>
+            <p>Appointments</p>
+            <h2 id="statAppointments">0</h2>
+          </article>
+        </div>
+
+        <div class="panel">
+          <div class="panel-heading">
+            <div>
+              <h3>Patient List Preview</h3>
+              <p class="muted">Fictional sample information only.</p>
+            </div>
+            <button class="outline" data-go="patients">
+              View Patients
+            </button>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Patient Name</th>
+                  <th>Student ID</th>
+                  <th>Grade / Section</th>
+                  <th>Last Visit</th>
+                </tr>
+              </thead>
+              <tbody id="recentPatients"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="notice">
+          This prototype manages basic information and clinic
+          activities only. It does not contain medical histories,
+          diagnoses, prescriptions, or billing information.
+        </div>
+      </section>
+
+      <!-- PATIENT INFORMATION -->
+      <section id="patientsPage" class="page hidden">
+        <div class="page-heading">
+          <div>
+            <h1>Patient Information</h1>
+            <p class="muted">
+              Search and manage basic sample patient profiles.
+            </p>
+          </div>
+          <button id="addPatientBtn" class="primary">
+            + Add Patient
+          </button>
+        </div>
+
+        <div class="panel">
+          <input id="patientSearch" class="search"
+                 type="search"
+                 placeholder="Search name or student ID..."
+                 aria-label="Search patient information">
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Patient Name</th>
+                  <th>Student ID</th>
+                  <th>Grade / Section</th>
+                  <th>Last Visit</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="patientsTable"></tbody>
+            </table>
+          </div>
+
+          <p id="emptyPatients" class="muted hidden">
+            No matching patients found.
+          </p>
+        </div>
+      </section>
+
+      <!-- CONSULTATIONS -->
+      <section id="consultationsPage" class="page hidden">
+        <div class="page-heading">
+          <div>
+            <h1>Consultations</h1>
+            <p class="muted">
+              View visit dates and general consultation categories.
+            </p>
+          </div>
+          <button id="addConsultationBtn" class="primary">
+            + Add Consultation
+          </button>
+        </div>
+
+        <div id="consultationList" class="record-list"></div>
+      </section>
+
+      <!-- MEDICAL SERVICES -->
+      <section id="servicesPage" class="page hidden">
+        <h1>Medical Services</h1>
+        <p class="muted">
+          General service categories for the proposed system.
+        </p>
+
+        <div class="service-grid">
+          <article class="service-card">
+            <span class="stat-icon green">✚</span>
+            <h3>First Aid</h3>
+            <p>Initial assistance for minor incidents.</p>
+          </article>
+
+          <article class="service-card">
+            <span class="stat-icon blue">♧</span>
+            <h3>General Consultation</h3>
+            <p>A consultation with clinic personnel.</p>
+          </article>
+
+          <article class="service-card">
+            <span class="stat-icon purple">☼</span>
+            <h3>Dental Check-up</h3>
+            <p>A general dental service category.</p>
+          </article>
+
+          <article class="service-card">
+            <span class="stat-icon orange">↗</span>
+            <h3>Hospital Referral</h3>
+            <p>Referral for further medical assistance.</p>
+          </article>
+        </div>
+      </section>
+
+      <!-- APPOINTMENTS -->
+      <section id="appointmentsPage" class="page hidden">
+        <div class="page-heading">
+          <div>
+            <h1>Appointments</h1>
+            <p class="muted">
+              Schedule and view proposed clinic appointments.
+            </p>
+          </div>
+          <button id="addAppointmentBtn" class="primary">
+            + Add Appointment
+          </button>
+        </div>
+
+        <div class="panel table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Patient</th>
+                <th>Date</th>
+                <th>Purpose</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="appointmentsTable"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <footer class="footer">
+        Clinic Patient Management System | IT107 |
+        Dream Catcher 2
+      </footer>
+
+    </main>
+  </div>
+
+  <!-- ADD PATIENT FORM -->
+  <dialog id="patientDialog" class="modal">
+    <form id="patientForm">
+      <h2>Add Patient</h2>
+      <p class="muted">Use fictional sample information only.</p>
+
+      <label for="patientName">Patient Name</label>
+      <input id="patientName" required maxlength="80">
+
+      <label for="studentId">Student ID</label>
+      <input id="studentId" required maxlength="30">
+
+      <label for="gradeSection">Grade / Section</label>
+      <input id="gradeSection" required maxlength="40">
+
+      <div class="modal-actions">
+        <button type="button" class="outline"
+                data-close="patientDialog">Cancel</button>
+        <button type="submit" class="primary">Save Patient</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- ADD CONSULTATION FORM -->
+  <dialog id="consultationDialog" class="modal">
+    <form id="consultationForm">
+      <h2>Add Consultation</h2>
+      <p class="muted">Record the visit category and date only.</p>
+
+      <label for="consultPatient">Patient</label>
+      <select id="consultPatient" required></select>
+
+      <label for="consultDate">Visit Date</label>
+      <input id="consultDate" type="date" required>
+
+      <label for="consultType">Consultation Category</label>
+      <select id="consultType" required>
+        <option>General Consultation</option>
+        <option>First Aid</option>
+        <option>Dental Check-up</option>
+        <option>Follow-up</option>
+        <option>Hospital Referral</option>
+      </select>
+
+      <div class="modal-actions">
+        <button type="button" class="outline"
+                data-close="consultationDialog">Cancel</button>
+        <button type="submit" class="primary">Save Consultation</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- ADD APPOINTMENT FORM -->
+  <dialog id="appointmentDialog" class="modal">
+    <form id="appointmentForm">
+      <h2>Add Appointment</h2>
+      <p class="muted">Schedule a sample clinic visit.</p>
+
+      <label for="appointmentPatient">Patient</label>
+      <select id="appointmentPatient" required></select>
+
+      <label for="appointmentDate">Appointment Date</label>
+      <input id="appointmentDate" type="date" required>
+
+      <label for="appointmentPurpose">Purpose</label>
+      <select id="appointmentPurpose" required>
+        <option>General Consultation</option>
+        <option>Dental Check-up</option>
+        <option>Follow-up</option>
+      </select>
+
+      <div class="modal-actions">
+        <button type="button" class="outline"
+                data-close="appointmentDialog">Cancel</button>
+        <button type="submit" class="primary">Save Appointment</button>
+      </div>
+    </form>
+  </dialog>
+
+</body>
+</html>

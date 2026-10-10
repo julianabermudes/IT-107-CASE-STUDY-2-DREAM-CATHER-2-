@@ -1,0 +1,27 @@
+
+[
+  {
+    "id": "DEMO-001",
+    "name": "Juan Dela Cruz",
+    "grade": "Grade 11 - Sampaguita",
+    "lastVisit": "2026-10-06"
+  },
+  {
+    "id": "DEMO-002",
+    "name": "Maria Santos",
+    "grade": "Grade 10 - Rosal",
+    "lastVisit": "2026-10-05"
+  },
+  {
+    "id": "DEMO-003",
+    "name": "Alex Reyes",
+    "grade": "Grade 12 - Gumamela",
+    "lastVisit": "2026-10-04"
+  },
+  {
+    "id": "DEMO-004",
+    "name": "Ana Garcia",
+    "grade": "Grade 9 - Dahlia",
+    "lastVisit": "2026-10-03"
+  }
+]
