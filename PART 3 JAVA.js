@@ -1,76 +1,30 @@
-
 "use strict";
 
 const $ = (id) => document.getElementById(id);
 
+/* ---------- SAMPLE DATA (fictional, in memory only) ---------- */
+
 let patients = [
-  {
-    id: "DEMO-001",
-    name: "Juan Dela Cruz",
-    grade: "Grade 11 - Sampaguita",
-    lastVisit: "2026-10-06"
-  },
-  {
-    id: "DEMO-002",
-    name: "Maria Santos",
-    grade: "Grade 10 - Rosal",
-    lastVisit: "2026-10-05"
-  },
-  {
-    id: "DEMO-003",
-    name: "Alex Reyes",
-    grade: "Grade 12 - Gumamela",
-    lastVisit: "2026-10-04"
-  },
-  {
-    id: "DEMO-004",
-    name: "Ana Garcia",
-    grade: "Grade 9 - Dahlia",
-    lastVisit: "2026-10-03"
-  }
+  { id: "DEMO-001", name: "Juan Dela Cruz", grade: "Grade 11 - Sampaguita", lastVisit: "2026-10-06" },
+  { id: "DEMO-002", name: "Maria Santos",   grade: "Grade 10 - Rosal",      lastVisit: "2026-10-05" },
+  { id: "DEMO-003", name: "Alex Reyes",     grade: "Grade 12 - Gumamela",   lastVisit: "2026-10-04" },
+  { id: "DEMO-004", name: "Ana Garcia",     grade: "Grade 9 - Dahlia",      lastVisit: "2026-10-03" }
 ];
 
-let consultations = [
-  {
-    patientId: "DEMO-001",
-    date: "2026-10-06",
-    type: "General Consultation"
-  },
-  {
-    patientId: "DEMO-002",
-    date: "2026-10-05",
-    type: "First Aid"
-  },
-  {
-    patientId: "DEMO-003",
-    date: "2026-10-04",
-    type: "Follow-up"
-  }
+let staff = [
+  { name: "Nurse Lourdes Ramos", role: "School Nurse",  schedule: "Mon–Fri, 8:00 AM – 4:00 PM" },
+  { name: "Dr. Paolo Mendoza",   role: "School Doctor", schedule: "Tue & Thu, 9:00 AM – 1:00 PM" },
+  { name: "Dr. Grace Villanueva", role: "Dentist",      schedule: "Wed, 9:00 AM – 3:00 PM" }
 ];
 
 let appointments = [
-  {
-    patientId: "DEMO-001",
-    date: "2026-10-12",
-    purpose: "General Consultation",
-    status: "Scheduled"
-  },
-  {
-    patientId: "DEMO-002",
-    date: "2026-10-14",
-    purpose: "Dental Check-up",
-    status: "Scheduled"
-  }
+  { patientId: "DEMO-001", date: "2026-10-22", purpose: "General Consultation", status: "Scheduled" },
+  { patientId: "DEMO-002", date: "2026-10-26", purpose: "Dental Check-up",      status: "Scheduled" }
 ];
 
-const serviceCategories = [
-  "First Aid",
-  "General Consultation",
-  "Dental Check-up",
-  "Hospital Referral"
-];
+/* ---------- HELPERS ---------- */
 
-// Safe helper for creating table cells.
+// Safe helper for creating table cells (uses textContent, never innerHTML).
 function addCell(row, value) {
   const cell = document.createElement("td");
   cell.textContent = String(value ?? "");
@@ -85,7 +39,17 @@ function makeBadge(text) {
   return badge;
 }
 
-// LOGIN
+// Local date as YYYY-MM-DD (toISOString() uses UTC, which is off by a day
+// early in the morning in the Philippines).
+function todayLocal() {
+  const d = new Date();
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return d.getFullYear() + "-" + month + "-" + day;
+}
+
+/* ---------- LOGIN / LOGOUT ---------- */
+
 $("loginForm").addEventListener("submit", function (event) {
   event.preventDefault();
 
@@ -105,67 +69,50 @@ $("loginForm").addEventListener("submit", function (event) {
   }
 });
 
-// LOGOUT
 $("logoutBtn").addEventListener("click", function () {
   $("appShell").classList.add("hidden");
   $("loginPage").classList.remove("hidden");
   $("loginForm").reset();
 });
 
-// NAVIGATION
-const pageNames = [
-  "dashboard",
-  "patients",
-  "consultations",
-  "services",
-  "appointments"
-];
+/* ---------- NAVIGATION ---------- */
 
 const pageTitles = {
   dashboard: "Dashboard",
   patients: "Patient Information",
-  consultations: "Consultations",
-  services: "Medical Services",
+  staff: "Staff",
   appointments: "Appointments"
 };
+
+const pageNames = Object.keys(pageTitles);
 
 function showPage(pageName) {
   if (!pageNames.includes(pageName)) return;
 
   pageNames.forEach((name) => {
-    $(name + "Page").classList.toggle(
-      "hidden",
-      name !== pageName
-    );
+    $(name + "Page").classList.toggle("hidden", name !== pageName);
   });
 
   document.querySelectorAll(".nav-item").forEach((button) => {
-    button.classList.toggle(
-      "active",
-      button.dataset.page === pageName
-    );
+    button.classList.toggle("active", button.dataset.page === pageName);
   });
 
   $("pageTitle").textContent = pageTitles[pageName];
 }
 
 document.querySelectorAll(".nav-item").forEach((button) => {
-  button.addEventListener("click", function () {
-    showPage(button.dataset.page);
-  });
+  button.addEventListener("click", () => showPage(button.dataset.page));
 });
 
 document.querySelectorAll("[data-go]").forEach((button) => {
-  button.addEventListener("click", function () {
-    showPage(button.dataset.go);
-  });
+  button.addEventListener("click", () => showPage(button.dataset.go));
 });
 
-// DASHBOARD
+/* ---------- DASHBOARD ---------- */
+
 function renderDashboard() {
   $("statPatients").textContent = patients.length;
-  $("statConsultations").textContent = consultations.length;
-  $("statServices").textContent = serviceCategories.length;
+  $("statStaff").textContent = staff.length;
   $("statAppointments").textContent = appointments.length;
 
   const tbody = $("recentPatients");
@@ -173,33 +120,29 @@ function renderDashboard() {
 
   patients.slice(0, 5).forEach((patient) => {
     const row = document.createElement("tr");
-
     addCell(row, patient.name);
     addCell(row, patient.id);
     addCell(row, patient.grade);
     addCell(row, patient.lastVisit);
-
     tbody.appendChild(row);
   });
 }
 
-// PATIENT INFORMATION AND SEARCH
+/* ---------- PATIENTS ---------- */
+
 function renderPatients(searchTerm = "") {
   const tbody = $("patientsTable");
   tbody.replaceChildren();
 
   const term = searchTerm.trim().toLowerCase();
 
-  const results = patients.filter((patient) => {
-    return (
-      patient.name.toLowerCase().includes(term) ||
-      patient.id.toLowerCase().includes(term)
-    );
-  });
+  const results = patients.filter((patient) =>
+    patient.name.toLowerCase().includes(term) ||
+    patient.id.toLowerCase().includes(term)
+  );
 
   results.forEach((patient) => {
     const row = document.createElement("tr");
-
     addCell(row, patient.name);
     addCell(row, patient.id);
     addCell(row, patient.grade);
@@ -207,11 +150,9 @@ function renderPatients(searchTerm = "") {
 
     const actionCell = addCell(row, "");
     const viewButton = document.createElement("button");
-
     viewButton.type = "button";
     viewButton.className = "outline";
     viewButton.textContent = "View";
-
     viewButton.addEventListener("click", function () {
       alert(
         "SAMPLE PATIENT PROFILE\n\n" +
@@ -227,17 +168,13 @@ function renderPatients(searchTerm = "") {
     tbody.appendChild(row);
   });
 
-  $("emptyPatients").classList.toggle(
-    "hidden",
-    results.length > 0
-  );
+  $("emptyPatients").classList.toggle("hidden", results.length > 0);
 }
 
 $("patientSearch").addEventListener("input", function () {
   renderPatients(this.value);
 });
 
-// ADD PATIENT
 $("addPatientBtn").addEventListener("click", function () {
   $("patientForm").reset();
   $("patientDialog").showModal();
@@ -255,140 +192,126 @@ $("patientForm").addEventListener("submit", function (event) {
     return;
   }
 
-  const duplicate = patients.some((patient) => {
-    return patient.id.toLowerCase() === id.toLowerCase();
-  });
+  const duplicate = patients.some(
+    (patient) => patient.id.toLowerCase() === id.toLowerCase()
+  );
 
   if (duplicate) {
     alert("This Student ID already exists in the sample list.");
     return;
   }
 
-  patients.push({
-    id: id,
-    name: name,
-    grade: grade,
-    lastVisit: "No visit recorded"
-  });
+  patients.push({ id, name, grade, lastVisit: "No visit recorded" });
 
   $("patientDialog").close();
   renderAll();
   showPage("patients");
 });
 
-// PATIENT DROPDOWN MENUS
+/* ---------- STAFF ---------- */
+
+function renderStaff(searchTerm = "") {
+  const tbody = $("staffTable");
+  tbody.replaceChildren();
+
+  const term = searchTerm.trim().toLowerCase();
+
+  const results = staff.filter((member) =>
+    member.name.toLowerCase().includes(term) ||
+    member.role.toLowerCase().includes(term)
+  );
+
+  results.forEach((member) => {
+    const row = document.createElement("tr");
+    addCell(row, member.name);
+
+    const roleCell = addCell(row, "");
+    roleCell.appendChild(makeBadge(member.role));
+
+    addCell(row, member.schedule);
+
+    const actionCell = addCell(row, "");
+    const viewButton = document.createElement("button");
+    viewButton.type = "button";
+    viewButton.className = "outline";
+    viewButton.textContent = "View";
+    viewButton.addEventListener("click", function () {
+      alert(
+        "SAMPLE STAFF PROFILE\n\n" +
+        "Name: " + member.name + "\n" +
+        "Role: " + member.role + "\n" +
+        "Schedule: " + member.schedule
+      );
+    });
+
+    actionCell.appendChild(viewButton);
+    tbody.appendChild(row);
+  });
+
+  $("emptyStaff").classList.toggle("hidden", results.length > 0);
+}
+
+$("staffSearch").addEventListener("input", function () {
+  renderStaff(this.value);
+});
+
+$("addStaffBtn").addEventListener("click", function () {
+  $("staffForm").reset();
+  $("staffDialog").showModal();
+});
+
+$("staffForm").addEventListener("submit", function (event) {
+  event.preventDefault();
+
+  const name = $("staffName").value.trim();
+  const role = $("staffRole").value;
+  const schedule = $("staffSchedule").value.trim();
+
+  if (!name || !role || !schedule) {
+    alert("Please complete all required fields.");
+    return;
+  }
+
+  const duplicate = staff.some(
+    (member) =>
+      member.name.toLowerCase() === name.toLowerCase() &&
+      member.role === role
+  );
+
+  if (duplicate) {
+    alert("This staff member already exists in the sample list.");
+    return;
+  }
+
+  staff.push({ name, role, schedule });
+
+  $("staffDialog").close();
+  renderAll();
+  showPage("staff");
+});
+
+/* ---------- APPOINTMENTS ---------- */
+
 function fillPatientSelect(selectId) {
   const select = $(selectId);
   select.replaceChildren();
 
   patients.forEach((patient) => {
     const option = document.createElement("option");
-
     option.value = patient.id;
-    option.textContent =
-      patient.name + " (" + patient.id + ")";
-
+    option.textContent = patient.name + " (" + patient.id + ")";
     select.appendChild(option);
   });
 
   select.disabled = patients.length === 0;
 }
 
-// CONSULTATIONS
-function renderConsultations() {
-  const list = $("consultationList");
-  list.replaceChildren();
-
-  if (consultations.length === 0) {
-    const message = document.createElement("p");
-    message.className = "muted";
-    message.textContent = "No consultations have been added.";
-    list.appendChild(message);
-    return;
-  }
-
-  consultations.forEach((consultation) => {
-    const patient = patients.find(
-      (item) => item.id === consultation.patientId
-    );
-
-    const card = document.createElement("article");
-    card.className = "record-card";
-
-    const heading = document.createElement("h3");
-    heading.textContent = patient
-      ? patient.name
-      : "Sample patient";
-
-    const date = document.createElement("p");
-    date.textContent = "Visit date: " + consultation.date;
-
-    const category = document.createElement("p");
-    category.textContent =
-      "Consultation category: " + consultation.type;
-
-    card.append(heading, date, category);
-    list.appendChild(card);
-  });
-}
-
-$("addConsultationBtn").addEventListener("click", function () {
-  if (patients.length === 0) {
-    alert("Add a sample patient first.");
-    return;
-  }
-
-  fillPatientSelect("consultPatient");
-  $("consultDate").value = new Date().toISOString().slice(0, 10);
-  $("consultationDialog").showModal();
-});
-
-$("consultationForm").addEventListener("submit", function (event) {
-  event.preventDefault();
-
-  const patientId = $("consultPatient").value;
-  const date = $("consultDate").value;
-  const type = $("consultType").value;
-  const today = new Date().toISOString().slice(0, 10);
-
-  if (!patientId || !date || !type) {
-    alert("Please complete all required fields.");
-    return;
-  }
-
-  if (date > today) {
-    alert("The visit date cannot be in the future.");
-    return;
-  }
-
-  consultations.unshift({
-    patientId: patientId,
-    date: date,
-    type: type
-  });
-
-  const patient = patients.find(
-    (item) => item.id === patientId
-  );
-
-  if (patient) {
-    patient.lastVisit = date;
-  }
-
-  $("consultationDialog").close();
-  renderAll();
-});
-
-// APPOINTMENTS
 function renderAppointments() {
   const tbody = $("appointmentsTable");
   tbody.replaceChildren();
 
   appointments.forEach((appointment) => {
-    const patient = patients.find(
-      (item) => item.id === appointment.patientId
-    );
-
+    const patient = patients.find((item) => item.id === appointment.patientId);
     const row = document.createElement("tr");
 
     addCell(row, patient ? patient.name : "Sample patient");
@@ -410,6 +333,7 @@ $("addAppointmentBtn").addEventListener("click", function () {
 
   fillPatientSelect("appointmentPatient");
   $("appointmentDate").value = "";
+  $("appointmentDate").min = todayLocal();
   $("appointmentDialog").showModal();
 });
 
@@ -419,63 +343,52 @@ $("appointmentForm").addEventListener("submit", function (event) {
   const patientId = $("appointmentPatient").value;
   const date = $("appointmentDate").value;
   const purpose = $("appointmentPurpose").value;
-  const today = new Date().toISOString().slice(0, 10);
 
   if (!patientId || !date || !purpose) {
     alert("Please complete all required fields.");
     return;
   }
 
-  if (date < today) {
+  if (date < todayLocal()) {
     alert("Choose today or a future appointment date.");
     return;
   }
 
-  const duplicate = appointments.some((appointment) => {
-    return (
+  const duplicate = appointments.some(
+    (appointment) =>
       appointment.patientId === patientId &&
       appointment.date === date &&
       appointment.purpose === purpose
-    );
-  });
+  );
 
   if (duplicate) {
     alert("This appointment already exists.");
     return;
   }
 
-  appointments.push({
-    patientId: patientId,
-    date: date,
-    purpose: purpose,
-    status: "Scheduled"
-  });
+  appointments.push({ patientId, date, purpose, status: "Scheduled" });
 
   $("appointmentDialog").close();
   renderAll();
+  showPage("appointments");
 });
 
-// CLOSE FORM BUTTONS
+/* ---------- CLOSE DIALOG BUTTONS ---------- */
+
 document.querySelectorAll("[data-close]").forEach((button) => {
   button.addEventListener("click", function () {
     const dialog = $(button.dataset.close);
-
-    if (dialog) {
-      dialog.close();
-    }
+    if (dialog) dialog.close();
   });
 });
 
-// UPDATE ALL DISPLAYS
+/* ---------- UPDATE ALL DISPLAYS ---------- */
+
 function renderAll() {
   renderDashboard();
   renderPatients($("patientSearch").value);
-  renderConsultations();
+  renderStaff($("staffSearch").value);
   renderAppointments();
-
-  fillPatientSelect("consultPatient");
-  fillPatientSelect("appointmentPatient");
 }
 
-// INITIAL DATE
 // No data is saved to a permanent database in this demo.

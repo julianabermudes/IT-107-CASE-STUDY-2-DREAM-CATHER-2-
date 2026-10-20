@@ -60,11 +60,8 @@
         <button class="nav-item" data-page="patients">
           ♙ Patient Information
         </button>
-        <button class="nav-item" data-page="consultations">
-          ▤ Consultations
-        </button>
-        <button class="nav-item" data-page="services">
-          ✚ Medical Services
+        <button class="nav-item" data-page="staff">
+          ☺ Staff
         </button>
         <button class="nav-item" data-page="appointments">
           ◷ Appointments
@@ -96,8 +93,8 @@
       <section id="dashboardPage" class="page">
         <h1>Welcome to PCC Clinic!</h1>
         <p class="muted">
-          Manage basic patient information, consultations,
-          medical services, and appointments.
+          Manage basic patient information, clinic staff,
+          and appointments.
         </p>
 
         <div class="stats">
@@ -108,15 +105,9 @@
           </article>
 
           <article class="stat-card">
-            <span class="stat-icon blue">▤</span>
-            <p>Consultations</p>
-            <h2 id="statConsultations">0</h2>
-          </article>
-
-          <article class="stat-card">
-            <span class="stat-icon purple">✚</span>
-            <p>Medical Services</p>
-            <h2 id="statServices">4</h2>
+            <span class="stat-icon blue">☺</span>
+            <p>Staff</p>
+            <h2 id="statStaff">0</h2>
           </article>
 
           <article class="stat-card">
@@ -200,54 +191,43 @@
         </div>
       </section>
 
-      <!-- CONSULTATIONS -->
-      <section id="consultationsPage" class="page hidden">
+      <!-- STAFF -->
+      <section id="staffPage" class="page hidden">
         <div class="page-heading">
           <div>
-            <h1>Consultations</h1>
+            <h1>Staff</h1>
             <p class="muted">
-              View visit dates and general consultation categories.
+              View and manage the clinic staff on duty.
             </p>
           </div>
-          <button id="addConsultationBtn" class="primary">
-            + Add Consultation
+          <button id="addStaffBtn" class="primary">
+            + Add Staff
           </button>
         </div>
 
-        <div id="consultationList" class="record-list"></div>
-      </section>
+        <div class="panel">
+          <input id="staffSearch" class="search"
+                 type="search"
+                 placeholder="Search name or role..."
+                 aria-label="Search staff">
 
-      <!-- MEDICAL SERVICES -->
-      <section id="servicesPage" class="page hidden">
-        <h1>Medical Services</h1>
-        <p class="muted">
-          General service categories for the proposed system.
-        </p>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Staff Name</th>
+                  <th>Role</th>
+                  <th>Schedule</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="staffTable"></tbody>
+            </table>
+          </div>
 
-        <div class="service-grid">
-          <article class="service-card">
-            <span class="stat-icon green">✚</span>
-            <h3>First Aid</h3>
-            <p>Initial assistance for minor incidents.</p>
-          </article>
-
-          <article class="service-card">
-            <span class="stat-icon blue">♧</span>
-            <h3>General Consultation</h3>
-            <p>A consultation with clinic personnel.</p>
-          </article>
-
-          <article class="service-card">
-            <span class="stat-icon purple">☼</span>
-            <h3>Dental Check-up</h3>
-            <p>A general dental service category.</p>
-          </article>
-
-          <article class="service-card">
-            <span class="stat-icon orange">↗</span>
-            <h3>Hospital Referral</h3>
-            <p>Referral for further medical assistance.</p>
-          </article>
+          <p id="emptyStaff" class="muted hidden">
+            No matching staff found.
+          </p>
         </div>
       </section>
 
@@ -311,31 +291,31 @@
     </form>
   </dialog>
 
-  <!-- ADD CONSULTATION FORM -->
-  <dialog id="consultationDialog" class="modal">
-    <form id="consultationForm">
-      <h2>Add Consultation</h2>
-      <p class="muted">Record the visit category and date only.</p>
+  <!-- ADD STAFF FORM -->
+  <dialog id="staffDialog" class="modal">
+    <form id="staffForm">
+      <h2>Add Staff</h2>
+      <p class="muted">Use fictional sample information only.</p>
 
-      <label for="consultPatient">Patient</label>
-      <select id="consultPatient" required></select>
+      <label for="staffName">Staff Name</label>
+      <input id="staffName" required maxlength="80">
 
-      <label for="consultDate">Visit Date</label>
-      <input id="consultDate" type="date" required>
-
-      <label for="consultType">Consultation Category</label>
-      <select id="consultType" required>
-        <option>General Consultation</option>
-        <option>First Aid</option>
-        <option>Dental Check-up</option>
-        <option>Follow-up</option>
-        <option>Hospital Referral</option>
+      <label for="staffRole">Role</label>
+      <select id="staffRole" required>
+        <option>School Nurse</option>
+        <option>School Doctor</option>
+        <option>Dentist</option>
+        <option>Clinic Aide</option>
       </select>
+
+      <label for="staffSchedule">Schedule</label>
+      <input id="staffSchedule" required maxlength="60"
+             placeholder="e.g. Mon–Fri, 8:00 AM – 4:00 PM">
 
       <div class="modal-actions">
         <button type="button" class="outline"
-                data-close="consultationDialog">Cancel</button>
-        <button type="submit" class="primary">Save Consultation</button>
+                data-close="staffDialog">Cancel</button>
+        <button type="submit" class="primary">Save Staff</button>
       </div>
     </form>
   </dialog>

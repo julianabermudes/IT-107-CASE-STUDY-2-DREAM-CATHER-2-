@@ -1,27 +1,17 @@
-
-[
-  {
-    "id": "DEMO-001",
-    "name": "Juan Dela Cruz",
-    "grade": "Grade 11 - Sampaguita",
-    "lastVisit": "2026-10-06"
-  },
-  {
-    "id": "DEMO-002",
-    "name": "Maria Santos",
-    "grade": "Grade 10 - Rosal",
-    "lastVisit": "2026-10-05"
-  },
-  {
-    "id": "DEMO-003",
-    "name": "Alex Reyes",
-    "grade": "Grade 12 - Gumamela",
-    "lastVisit": "2026-10-04"
-  },
-  {
-    "id": "DEMO-004",
-    "name": "Ana Garcia",
-    "grade": "Grade 9 - Dahlia",
-    "lastVisit": "2026-10-03"
-  }
-]
+{
+  "patients": [
+    { "id": "DEMO-001", "name": "Juan Dela Cruz", "grade": "Grade 11 - Sampaguita", "lastVisit": "2026-10-06" },
+    { "id": "DEMO-002", "name": "Maria Santos",   "grade": "Grade 10 - Rosal",      "lastVisit": "2026-10-05" },
+    { "id": "DEMO-003", "name": "Alex Reyes",     "grade": "Grade 12 - Gumamela",   "lastVisit": "2026-10-04" },
+    { "id": "DEMO-004", "name": "Ana Garcia",     "grade": "Grade 9 - Dahlia",      "lastVisit": "2026-10-03" }
+  ],
+  "staff": [
+    { "name": "Nurse Lourdes Ramos",  "role": "School Nurse",  "schedule": "Mon–Fri, 8:00 AM – 4:00 PM" },
+    { "name": "Dr. Paolo Mendoza",    "role": "School Doctor", "schedule": "Tue & Thu, 9:00 AM – 1:00 PM" },
+    { "name": "Dr. Grace Villanueva", "role": "Dentist",       "schedule": "Wed, 9:00 AM – 3:00 PM" }
+  ],
+  "appointments": [
+    { "patientId": "DEMO-001", "date": "2026-10-22", "purpose": "General Consultation", "status": "Scheduled" },
+    { "patientId": "DEMO-002", "date": "2026-10-26", "purpose": "Dental Check-up",      "status": "Scheduled" }
+  ]
+}
